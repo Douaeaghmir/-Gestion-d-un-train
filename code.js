@@ -154,7 +154,6 @@ const prompt = require("prompt-sync")();
         availableSeats: 50
     },
     {
-        id: 18,
         departure: "El Jadida",
         destination: "Safi",
         departureTime: "18:30",
@@ -194,6 +193,53 @@ function displayTrips()
         console.log("Places disponibles : "+ trip.availableSeats);
     }
 }
+let tickets = [];
+function achterticket()
+{
+    let ticket = [];
+    let name = prompt("enter you name : ");
+    let tid = Number(prompt(" enter traget id : "));
+
+    let store;
+    for(let i = 0 ; i < trips.length; i++)
+    {
+        if(trips[i].id === tid)
+        {
+            store = trips[i];
+            break;
+        }
+    }
+    if(store == undefined)
+    {
+        console.log("Trip not found!");
+        return;
+    }
+    if(store.availableSeats === 0)
+    {
+        console.log("are tickets are sold!");
+        return;
+    }
+    ticket = {
+        serialnumber : ticket.length + 1,
+        passangername : name,
+        place : 50 - store.availableSeats + 1,
+        prix : store.price
+    };
+    tickets.push(ticket);
+    console.log("--- Your tickets Purchased succesfully ---");
+    console.table(tickets);
+}
+function affallticket()
+{
+    console.log("==All the tickets==");
+    for (let i = 0 ;  i < trips.length ; i++)
+    {
+        console.log("traject id : " + trips[i].id);
+        console.log("depart : " + trips[i].departureTime);
+        console.log("set : " + trips[i].place);
+        console.log("price : " + trips[i].price);
+    }
+}
 
 console.log(`=================================
         RAILWAY MANAGER
@@ -207,13 +253,17 @@ console.log(`=================================
 7. Trier les trajets
 0. Quitter`);
 
-let evalue = Number(prompt("enter your choise : "));
-switch(evalue)
+let uvalue = Number(prompt("enter your choise : "));
+switch(uvalue)
 {
     case 1 :
         displayTrips();
         break;
     case 2:
+        achterticket();
+        break;
+    case 3:
+        affallticket();
         break;
 
 }
