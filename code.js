@@ -220,28 +220,56 @@ function achterticket()
         return;
     }
     ticket = {
-        serialnumber : ticket.length + 1,
-        passangername : name,
-        place : 50 - store.availableSeats + 1,
-        prix : store.price
-    };
+    serialnumber : tickets.length + 1,
+    passangername : name,
+    tripid : store.id,
+    departure : store.departure,
+    destination : store.destination,
+    place : 50 - store.availableSeats + 1,
+    prix : store.price
+};
     tickets.push(ticket);
+    store.availableSeats--;
     console.log("--- Your tickets Purchased succesfully ---");
     console.table(tickets);
+}
+function annule()
+{
+    let safe ;
+    let sid;
+    let idr = Number(prompt("enter your id : "));
+    for(let i = 0; i < tickets.length ; i++)
+    {
+    if(tickets[i].serialnumber === idr)
+        {
+            sid = tickets[i].tripid;
+            trips[sid - 1].availableSeats++;
+            tickets.splice(i , 1);
+            console.log("your ticket was removed succefully");
+            return;
+        }
+        if(safe == undefined)
+        {
+            console.log("ticket not found!");
+            return;
+        }
+    }
 }
 function affallticket()
 {
     console.log("==All the tickets==");
-    for (let i = 0 ;  i < trips.length ; i++)
+    for (let i = 0 ;  i < tickets.length ; i++)
     {
-        console.log("traject id : " + trips[i].id);
-        console.log("depart : " + trips[i].departureTime);
-        console.log("set : " + trips[i].place);
-        console.log("price : " + trips[i].price);
+        console.log("traject id : " + tickets[i].serialnumber);
+        console.log("depart : " + tickets[i].passangername);
+        console.log(tickets[i].departure + " -> " + tickets[i].destination);
+        console.log("set : " + tickets[i].place);
+        console.log("price : " + tickets[i].prix);
     }
 }
-
-console.log(`=================================
+function affmenu()
+{
+    console.log(`=================================  
         RAILWAY MANAGER
 =================================
 1. Afficher les trajets
@@ -252,18 +280,26 @@ console.log(`=================================
 6. Filtrer les trajets
 7. Trier les trajets
 0. Quitter`);
-
+}
+while(true)
+{
+let aff = affmenu();
 let uvalue = Number(prompt("enter your choise : "));
 switch(uvalue)
 {
     case 1 :
         displayTrips();
         break;
-    case 2:
+    case 2 :
         achterticket();
         break;
-    case 3:
+    case 3 :
         affallticket();
         break;
-
+    case 4:
+        annule();
+        break;
+    case 0 :
+        return;
+}
 }
