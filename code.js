@@ -194,6 +194,8 @@ function displayTrips()
     }
 }
 let tickets = [];
+let ticketn = 1;
+let placerm ;
 function achterticket()
 {
     let ticket = [];
@@ -219,40 +221,100 @@ function achterticket()
         console.log("are tickets are sold!");
         return;
     }
+    let place;
+
+if(place.length > 0)
+{
+    place =placerm[0];
+    placerm.splice(0, 1);
+}
+else
+{
+    place = 50 - store.availableSeats + 1;
+}
     ticket = {
-    serialnumber : tickets.length + 1,
+    serialnumber : ticketn,
     passangername : name,
     tripid : store.id,
     departure : store.departure,
     destination : store.destination,
-    place : 50 - store.availableSeats + 1,
+    place : place,
     prix : store.price
 };
     tickets.push(ticket);
+    ticketn++;
     store.availableSeats--;
     console.log("--- Your tickets Purchased succesfully ---");
     console.table(tickets);
 }
 function annule()
 {
-    let safe ;
     let sid;
     let idr = Number(prompt("enter your id : "));
     for(let i = 0; i < tickets.length ; i++)
     {
     if(tickets[i].serialnumber === idr)
+    {
+        sid = tickets[i].tripid;
+        placerm.push(tickets[i].place);
+        for(let j = 0 ; j < trips.length ; j++)
         {
-            sid = tickets[i].tripid;
-            trips[sid - 1].availableSeats++;
-            tickets.splice(i , 1);
-            console.log("your ticket was removed succefully");
-            return;
+            if(trips[j].id === sid)
+            {
+                trips[j].availableSeats++;
+            break;
+            }
         }
-        if(safe == undefined)
+        tickets.splice(i , 1);
+        console.log("your ticket was remove succefully");
+        return;
+    }
+    }
+    console.log("ticket was not found!");
+    return;
+}
+function sort()
+{
+    let holder;
+let chose = Number(prompt(
+    `---- Sort by price ----
+1 - Low to high
+2 - High to low
+Choose: `
+));
+    if(chose === 1)
+    {
+        for(let i = 0 ; i < trips.length ; i++)
         {
-            console.log("ticket not found!");
-            return;
+            for(let j = 0 ; j < trips.length - i - 1; j++)
+            {
+                if(trips[j].price > trips[j + 1].price)
+                {
+                    holder = trips[j];
+                    trips[j] = trips[j + 1];
+                    trips[j + 1] = holder;
+                }
+            }
         }
+    }
+    else if(chose == 2)
+    {
+        for(let i = 0 ; i < trips.length ; i++)
+        {
+            for(let j = 0 ; j < trips.length - i - 1; j++)
+            {
+                if(trips[j].price < trips[j + 1].price)
+                {
+                    holder = trips[j];
+                    trips[j] = trips[j + 1];
+                    trips[j + 1] = holder;
+                }
+            }
+        }
+    }
+    for(let i = 0; i < trips.length ; i++)
+    {
+         console.log(trips[i].departure + "->" + trips[i].destination + " : " + trips[i].price + " DH");
     }
 }
 function affallticket()
@@ -265,6 +327,33 @@ function affallticket()
         console.log(tickets[i].departure + " -> " + tickets[i].destination);
         console.log("set : " + tickets[i].place);
         console.log("price : " + tickets[i].prix);
+    }
+}
+function recherchticket()
+{
+    let cname = prompt("enter your name : ");
+    for(let i = 0 ; i < tickets.length ; i++)
+    {
+        if(tickets[i].passangername === cname)
+        {
+        tickets[i].passangername = cname;
+        console.log("traject id : " + tickets[i].serialnumber);
+        console.log("depart : " + tickets[i].passangername);
+        console.log(tickets[i].departure + " -> " + tickets[i].destination);
+        console.log("set : " + tickets[i].place);
+        console.log("price : " + tickets[i].prix);
+        }
+    }
+}
+function filter()
+{
+    let depart = prompt("enter your depart : ");
+    for(let i = 0 ; i < trips.length ; i++)
+    {
+        if(trips[i].departure === depart)
+        {
+            console.log(trips[i].departure + "->" + trips[i].destination + " : " + trips[i].price + " DH");
+        }
     }
 }
 function affmenu()
@@ -298,6 +387,15 @@ switch(uvalue)
         break;
     case 4:
         annule();
+        break;
+    case 5 :
+        recherchticket();
+        break;
+    case 6:
+        filter();
+        break;
+    case 7:
+        sort();
         break;
     case 0 :
         return;
