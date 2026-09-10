@@ -1,5 +1,6 @@
 const prompt = require("prompt-sync")();
-    const trips = [
+
+const trips = [
     {
         id: 1,
         departure: "Safi",
@@ -154,6 +155,7 @@ const prompt = require("prompt-sync")();
         availableSeats: 50
     },
     {
+        id: 18,
         departure: "El Jadida",
         destination: "Safi",
         departureTime: "18:30",
@@ -180,22 +182,25 @@ const prompt = require("prompt-sync")();
         availableSeats: 50
     }
 ];
+
 function displayTrips() 
 {
     for (let trip of trips) 
     {
-        console.log("Trajet #"+ trip.id);
+        console.log("Trajet #" + trip.id);
         console.log("Départ : " + trip.departure);
         console.log("Destination : " + trip.destination);
         console.log("Heure de départ : " + trip.departureTime);
         console.log("Heure d'arrivée : " + trip.arrivalTime);
         console.log("Prix : " + trip.price);
-        console.log("Places disponibles : "+ trip.availableSeats);
+        console.log("Places disponibles : " + trip.availableSeats);
     }
 }
+
 let tickets = [];
 let ticketn = 1;
-let placerm ;
+let placerm = [];
+
 function achterticket()
 {
     let ticket = [];
@@ -203,7 +208,8 @@ function achterticket()
     let tid = Number(prompt(" enter traget id : "));
 
     let store;
-    for(let i = 0 ; i < trips.length; i++)
+
+    for(let i = 0; i < trips.length; i++)
     {
         if(trips[i].id === tid)
         {
@@ -211,82 +217,105 @@ function achterticket()
             break;
         }
     }
+
     if(store == undefined)
     {
         console.log("Trip not found!");
         return;
     }
+
     if(store.availableSeats === 0)
     {
         console.log("are tickets are sold!");
         return;
     }
-    let place;
 
-if(place.length > 0)
-{
-    place =placerm[0];
-    placerm.splice(0, 1);
-}
-else
-{
-    place = 50 - store.availableSeats + 1;
-}
+    let place1;
+    let found = false;
+    for(let i = 0; i < placerm.length; i++)
+    {
+        if(placerm[i].tripid === tid)
+        {
+            place1 = placerm[i].place;
+            placerm.splice(i, 1);
+            found = true;
+            break;
+        }
+    }
+    if(found === false)
+    {
+        place1 = 50 - store.availableSeats + 1;
+    }
+
     ticket = {
-    serialnumber : ticketn,
-    passangername : name,
-    tripid : store.id,
-    departure : store.departure,
-    destination : store.destination,
-    place : place,
-    prix : store.price
-};
+        serialnumber : ticketn,
+        passangername : name,
+        tripid : store.id,
+        departure : store.departure,
+        destination : store.destination,
+        place : place1,
+        prix : store.price
+    };
+
     tickets.push(ticket);
     ticketn++;
     store.availableSeats--;
+
     console.log("--- Your tickets Purchased succesfully ---");
     console.table(tickets);
 }
+
 function annule()
 {
     let sid;
     let idr = Number(prompt("enter your id : "));
-    for(let i = 0; i < tickets.length ; i++)
+
+    for(let i = 0; i < tickets.length; i++)
     {
-    if(tickets[i].serialnumber === idr)
-    {
-        sid = tickets[i].tripid;
-        placerm.push(tickets[i].place);
-        for(let j = 0 ; j < trips.length ; j++)
+        if(tickets[i].serialnumber === idr)
         {
-            if(trips[j].id === sid)
+            sid = tickets[i].tripid;
+            placerm.push({
+                tripid: tickets[i].tripid,
+                place: tickets[i].place
+            });
+
+            for(let j = 0; j < trips.length; j++)
             {
-                trips[j].availableSeats++;
-            break;
+                if(trips[j].id === sid)
+                {
+                    trips[j].availableSeats++;
+                    break;
+                }
             }
+
+            tickets.splice(i, 1);
+
+            console.log("your ticket was remove succefully");
+            return;
         }
-        tickets.splice(i , 1);
-        console.log("your ticket was remove succefully");
-        return;
     }
-    }
+
     console.log("ticket was not found!");
     return;
 }
+
 function sort()
 {
     let holder;
-let chose = Number(prompt(
-    `---- Sort by price ----
+
+    let chose = Number(prompt(
+        `---- Sort by price ----
 1 - Low to high
 2 - High to low
 Choose: `
-));
+    ));
+
     if(chose === 1)
     {
-        for(let i = 0 ; i < trips.length ; i++)
+        for(let i = 0; i < trips.length; i++)
         {
-            for(let j = 0 ; j < trips.length - i - 1; j++)
+            for(let j = 0; j < trips.length - i - 1; j++)
             {
                 if(trips[j].price > trips[j + 1].price)
                 {
@@ -297,11 +326,11 @@ Choose: `
             }
         }
     }
-    else if(chose == 2)
+    else if(chose === 2)
     {
-        for(let i = 0 ; i < trips.length ; i++)
+        for(let i = 0; i < trips.length; i++)
         {
-            for(let j = 0 ; j < trips.length - i - 1; j++)
+            for(let j = 0; j < trips.length - i - 1; j++)
             {
                 if(trips[j].price < trips[j + 1].price)
                 {
@@ -312,15 +341,22 @@ Choose: `
             }
         }
     }
-    for(let i = 0; i < trips.length ; i++)
+
+    for(let i = 0; i < trips.length; i++)
     {
-         console.log(trips[i].departure + "->" + trips[i].destination + " : " + trips[i].price + " DH");
+        console.log(
+            trips[i].departure + "->" +
+            trips[i].destination + " : " +
+            trips[i].price + " DH"
+        );
     }
 }
+
 function affallticket()
 {
     console.log("==All the tickets==");
-    for (let i = 0 ;  i < tickets.length ; i++)
+
+    for(let i = 0; i < tickets.length; i++)
     {
         console.log("traject id : " + tickets[i].serialnumber);
         console.log("depart : " + tickets[i].passangername);
@@ -329,33 +365,41 @@ function affallticket()
         console.log("price : " + tickets[i].prix);
     }
 }
+
 function recherchticket()
 {
     let cname = prompt("enter your name : ");
-    for(let i = 0 ; i < tickets.length ; i++)
+
+    for(let i = 0; i < tickets.length; i++)
     {
         if(tickets[i].passangername === cname)
         {
-        tickets[i].passangername = cname;
-        console.log("traject id : " + tickets[i].serialnumber);
-        console.log("depart : " + tickets[i].passangername);
-        console.log(tickets[i].departure + " -> " + tickets[i].destination);
-        console.log("set : " + tickets[i].place);
-        console.log("price : " + tickets[i].prix);
+            console.log("traject id : " + tickets[i].serialnumber);
+            console.log("depart : " + tickets[i].passangername);
+            console.log(tickets[i].departure + " -> " + tickets[i].destination);
+            console.log("set : " + tickets[i].place);
+            console.log("price : " + tickets[i].prix);
         }
     }
 }
+
 function filter()
 {
     let depart = prompt("enter your depart : ");
-    for(let i = 0 ; i < trips.length ; i++)
+
+    for(let i = 0; i < trips.length; i++)
     {
         if(trips[i].departure === depart)
         {
-            console.log(trips[i].departure + "->" + trips[i].destination + " : " + trips[i].price + " DH");
+            console.log(
+                trips[i].departure + "->" +
+                trips[i].destination + " : " +
+                trips[i].price + " DH"
+            );
         }
     }
 }
+
 function affmenu()
 {
     console.log(`=================================  
@@ -370,34 +414,43 @@ function affmenu()
 7. Trier les trajets
 0. Quitter`);
 }
+
 while(true)
 {
-let aff = affmenu();
-let uvalue = Number(prompt("enter your choise : "));
-switch(uvalue)
-{
-    case 1 :
-        displayTrips();
-        break;
-    case 2 :
-        achterticket();
-        break;
-    case 3 :
-        affallticket();
-        break;
-    case 4:
-        annule();
-        break;
-    case 5 :
-        recherchticket();
-        break;
-    case 6:
-        filter();
-        break;
-    case 7:
-        sort();
-        break;
-    case 0 :
-        return;
-}
+    let aff = affmenu();
+    let uvalue = Number(prompt("enter your choise : "));
+
+    switch(uvalue)
+    {
+        case 1:
+            displayTrips();
+            break;
+
+        case 2:
+            achterticket();
+            break;
+
+        case 3:
+            affallticket();
+            break;
+
+        case 4:
+            annule();
+            break;
+
+        case 5:
+            recherchticket();
+            break;
+
+        case 6:
+            filter();
+            break;
+
+        case 7:
+            sort();
+            break;
+
+        case 0:
+            process.exit();
+    }
 }
