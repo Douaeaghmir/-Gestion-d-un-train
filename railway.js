@@ -276,8 +276,8 @@ function annule()
         {
             sid = tickets[i].tripid;
             placerm.push({
-                tripid: tickets[i].tripid,
-                place: tickets[i].place
+                tripid : tickets[i].tripid,
+                place : tickets[i].place    
             });
 
             for(let j = 0; j < trips.length; j++)
@@ -344,10 +344,7 @@ Choose: `
 
     for(let i = 0; i < trips.length; i++)
     {
-        console.log(
-            trips[i].departure + "->" +
-            trips[i].destination + " : " +
-            trips[i].price + " DH"
+        console.log(trips[i].departure + "->" + trips[i].destination + " : " + trips[i].price + " DH"
         );
     }
 }
@@ -391,11 +388,7 @@ function filter()
     {
         if(trips[i].departure === depart)
         {
-            console.log(
-                trips[i].departure + "->" +
-                trips[i].destination + " : " +
-                trips[i].price + " DH"
-            );
+            console.log(trips[i].departure + "->" + trips[i].destination + " : " + trips[i].price + " DH");
         }
     }
 }
@@ -451,6 +444,7 @@ while(true)
             break;
 
         case 0:
-            process.exit();
+            console.log("GoodBye! <3");
+            return;
     }
 }
